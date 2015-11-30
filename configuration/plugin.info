@@ -1,0 +1,10 @@
+[Plugin]
+Name = configuration
+Version = 2.0.0
+license = MIT
+URL = https://github.com/edouardpoitras/jasper-configuration
+Description = Plugin for modifying Jasper configuration at runtime
+
+[Author]
+Name = Edouard Poitras
+URL = https://github.com/edouardpoitras
