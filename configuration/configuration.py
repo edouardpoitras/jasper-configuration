@@ -2,11 +2,11 @@
 import re
 import yaml
 from pytz import timezone
-from client import plugin
+from jasper import plugin
 from client import app_utils
 from client import jasperpath
 from client import pluginstore
-from client.mic import Mic
+#from client.mic import Mic
 
 OPTIONS = ["your name", "your location", "your timezone", "my voice"]
 
@@ -22,7 +22,7 @@ class ConfigurationPlugin(plugin.SpeechHandlerPlugin):
         mic.say('What configuration option would you like to change?')
         for option in OPTIONS:
             mic.say('Would you like to change %s?' %option)
-            if app_utils.is_positive(mic.active_listen()):
+            if app_utils.is_positive(mic.active_listen()[0]):
                 func = 'change_%s' %option.replace(' ', '_')
                 getattr(self, func)(mic)
                 return
@@ -37,10 +37,10 @@ class ConfigurationPlugin(plugin.SpeechHandlerPlugin):
 
     def change_your_name(self, mic):
         mic.say('What is your first name?')
-        fname = mic.active_listen()
+        fname = mic.active_listen()[0]
         fname = self.clean_input(fname).lower().capitalize()
         mic.say('What is your last name?')
-        lname = mic.active_listen()
+        lname = mic.active_listen()[0]
         lname = self.clean_input(lname).lower().capitalize()
         self.profile['first_name'] = fname
         self.profile['last_name'] = lname
@@ -50,7 +50,7 @@ class ConfigurationPlugin(plugin.SpeechHandlerPlugin):
 
     def change_your_location(self, mic):
         mic.say('What is your new location?')
-        location = mic.active_listen()
+        location = mic.active_listen()[0]
         location = self.clean_input(location).capitalize()
         self.profile['location'] = location
         self.save_profile()
@@ -58,7 +58,7 @@ class ConfigurationPlugin(plugin.SpeechHandlerPlugin):
 
     def change_your_timezone(self, mic):
         mic.say('What is your new timezone?')
-        tz = mic.active_listen()
+        tz = mic.active_listen()[0]
         tz = self.clean_input(tz).capitalize()
         try:
             timezone(tz)
@@ -72,7 +72,7 @@ class ConfigurationPlugin(plugin.SpeechHandlerPlugin):
         current_engine = self.profile['tts_engine'].split('-tts')[0]
         mic.say('My current text-to-speech engine is %s.  ' % current_engine)
         mic.say('What will be my new text-to-speech engine?')
-        tts_engine = mic.active_listen()
+        tts_engine = mic.active_listen()[0]
         tts_engine = self.clean_input(tts_engine)
         if not tts_engine.endswith('-tts'):
             tts_engine = '%s-tts' % tts_engine
